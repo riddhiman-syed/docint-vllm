@@ -1,0 +1,24 @@
+# Environment / secrets
+.env
+*.env
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Qdrant local installation (vendored binary — not source)
+qdrant/
+
+# Data / artifacts
+content/*.db
+*.db
+qdrant_storage/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
