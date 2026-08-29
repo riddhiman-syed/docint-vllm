@@ -41,7 +41,12 @@ class Embedder:
         self.model_name = settings.EMBEDDING_MODEL_NAME
         self.batch_size = settings.EMBEDDING_BATCH_SIZE
         self.model = SentenceTransformer(self.model_name, device=device)
-        self.dimension = self.model.get_sentence_embedding_dimension()
+        # get_embedding_dimension() is the current name; fall back for
+        # older sentence-transformers versions that only have the old one.
+        if hasattr(self.model, "get_embedding_dimension"):
+            self.dimension = self.model.get_embedding_dimension()
+        else:
+            self.dimension = self.model.get_sentence_embedding_dimension()
         logger.info("Loaded embedding model %s (dim=%d) on %s", self.model_name, self.dimension, device)
 
     def embed_documents(self, texts: Sequence[str]) -> list[list[float]]:
