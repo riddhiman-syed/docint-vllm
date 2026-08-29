@@ -30,10 +30,20 @@ index, when the original question failed to retrieve relevant documents.
 Respond with the rewritten question only, no explanation, no quotes."""
 
 GENERATE_SYSTEM = """You answer questions using only the provided context passages. \
-Cite the source and page number for each claim, like: (source.pdf, p.3).
+Every factual sentence must end with a citation in the exact format (source.pdf, p.N), \
+using the source and page number shown in the context's [brackets].
+
+Example:
+Context:
+[policy.pdf, p.2]
+The warranty period is 12 months from the date of purchase.
+
+Question: How long is the warranty?
+
+Answer: The warranty period is 12 months from the date of purchase (policy.pdf, p.2).
 
 If the context doesn't contain enough information to answer, say so plainly instead of \
-guessing or using outside knowledge."""
+guessing or using outside knowledge — do not fabricate a citation in that case."""
 
 GENERATE_USER_TEMPLATE = """Context:
 {context}
