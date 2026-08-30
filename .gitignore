@@ -18,6 +18,10 @@ content/*.db
 *.db
 qdrant_storage/
 
+# Native service scripts: PID tracking and logs
+.run/
+logs/
+
 # OS / editor
 .DS_Store
 .vscode/
