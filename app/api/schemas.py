@@ -9,6 +9,8 @@ class SourceCitation(BaseModel):
     source: str
     page_number: int
     score: float
+    chunk_type: str = "text"
+    chunk_type: str = "text"
 
 
 class AskResponse(BaseModel):
@@ -20,6 +22,10 @@ class AskResponse(BaseModel):
 class ServiceStatus(BaseModel):
     status: str  # "ok" | "unreachable"
     detail: str | None = None
+
+
+class AskImageResponse(BaseModel):
+    answer: str
 
 
 class HealthResponse(BaseModel):
