@@ -1,18 +1,16 @@
 """
-PDF text extraction.
+PDF text extraction, via PyMuPDF.
 
-Kept deliberately simple and dependency-light (pypdf only). Each page's
-text is yielded separately with its 1-indexed page number so downstream
-chunking can attach accurate page citations — this is the piece of the
-original app.py worth keeping, just extracted into a standalone,
-testable function instead of being inlined in the Gradio callback.
+Swapped from pypdf for extraction speed and quality on complex layouts.
+Each page's text is yielded separately with its 1-indexed page number
+so downstream chunking can attach accurate page citations.
 """
 import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import BinaryIO, Iterator, Union
 
-from pypdf import PdfReader
+import pymupdf
 
 logger = logging.getLogger(__name__)
 
@@ -24,12 +22,18 @@ class PageText:
     text: str
 
 
+def _open(pdf_source: Union[str, Path, BinaryIO]) -> pymupdf.Document:
+    if isinstance(pdf_source, (str, Path)):
+        return pymupdf.open(pdf_source)
+    return pymupdf.open(stream=pdf_source.read(), filetype="pdf")
+
+
 def extract_pages(pdf_source: Union[str, Path, BinaryIO], source_name: str | None = None) -> Iterator[PageText]:
     """
     Extract text page-by-page from a single PDF.
 
     pdf_source: a file path, or a file-like object (e.g. an UploadFile's
-                .file, or a BytesIO) — pypdf accepts both.
+                .file, or a BytesIO) — PyMuPDF accepts both.
     source_name: identifier to tag chunks with. Defaults to the path's
                  filename if pdf_source is a path; required otherwise.
     """
@@ -39,13 +43,16 @@ def extract_pages(pdf_source: Union[str, Path, BinaryIO], source_name: str | Non
         else:
             raise ValueError("source_name is required when pdf_source is a file-like object")
 
-    reader = PdfReader(pdf_source)
-    for i, page in enumerate(reader.pages):
-        text = page.extract_text()
-        if not text:
-            logger.debug("Page %d of %s had no extractable text (likely scanned/image-only)", i + 1, source_name)
-            continue
-        yield PageText(source=source_name, page_number=i + 1, text=text)
+    doc = _open(pdf_source)
+    try:
+        for i, page in enumerate(doc):
+            text = page.get_text()
+            if not text or not text.strip():
+                logger.debug("Page %d of %s had no extractable text (likely scanned/image-only)", i + 1, source_name)
+                continue
+            yield PageText(source=source_name, page_number=i + 1, text=text)
+    finally:
+        doc.close()
 
 
 def extract_pages_from_directory(directory: Union[str, Path], glob_pattern: str = "**/*.pdf") -> Iterator[PageText]:

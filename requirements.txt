@@ -1,3 +1,6 @@
+
+--extra-index-url https://download.pytorch.org/whl/cu130
+
 agent-detector==1.1.0
 aiofiles==25.1.0
 aiohappyeyeballs==2.7.1
@@ -229,9 +232,9 @@ pydantic_core==2.46.5
 pydub==0.25.1
 Pygments==2.21.0
 PyJWT==2.13.0
+pymupdf==1.28.2
 pynvvideocodec==2.0.4
 pyparsing==3.3.2
-pypdf==6.16.2
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.3
 python-json-logger==4.2.0
