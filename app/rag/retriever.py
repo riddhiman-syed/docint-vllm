@@ -17,6 +17,7 @@ class RetrievedChunk:
     source: str
     page_number: int
     score: float
+    chunk_type: str = "text"  # "text" | "image_caption"
 
 
 def retrieve(question: str, top_k: int = 5) -> list[RetrievedChunk]:
@@ -37,6 +38,7 @@ def retrieve(question: str, top_k: int = 5) -> list[RetrievedChunk]:
             source=point.payload["source"],
             page_number=point.payload["page_number"],
             score=point.score,
+            chunk_type=point.payload.get("chunk_type", "text"),
         )
         for point in results
     ]
