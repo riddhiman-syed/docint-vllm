@@ -28,6 +28,8 @@ class Chunk:
     page_number: int
     text: str
     chunk_index: int  # position of this chunk within its source page, for debugging/ordering
+    chunk_type: str = "text"  # "text" | "image_caption"
+    chunk_type: str = "text"  # "text" or "image_caption"
 
 
 def chunk_pages(pages: Iterable[PageText], chunk_size: int | None = None, chunk_overlap: int | None = None) -> Iterator[Chunk]:

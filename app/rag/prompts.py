@@ -69,4 +69,8 @@ FALLBACK_ANSWER = (
 
 def format_context(chunks) -> str:
     """chunks: list of RetrievedChunk"""
-    return "\n\n".join(f"[{c.source}, p.{c.page_number}]\n{c.text}" for c in chunks)
+    lines = []
+    for c in chunks:
+        label = f"{c.source}, p.{c.page_number}" + (", image description" if c.chunk_type == "image_caption" else "")
+        lines.append(f"[{label}]\n{c.text}")
+    return "\n\n".join(lines)

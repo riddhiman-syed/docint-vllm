@@ -64,6 +64,7 @@ def index_chunks(chunks: Sequence[Chunk], recreate: bool = False, batch_size: in
                     "source": chunk.source,
                     "page_number": chunk.page_number,
                     "chunk_index": chunk.chunk_index,
+                    "chunk_type": chunk.chunk_type,
                 },
             )
             for chunk, vector in zip(batch, vectors)
